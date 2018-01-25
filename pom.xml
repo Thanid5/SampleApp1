@@ -6,7 +6,7 @@
 	<groupId>com.truecorp.nam.test</groupId>
 	<artifactId>SpringBootTestProject</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<name>SpringBootTestProject</name>
 	<description>Project for testing springboot function</description>
@@ -15,7 +15,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>1.5.9.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 
 	<properties>
@@ -25,10 +25,28 @@
 	</properties>
 
 	<dependencies>
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
+		
+		<dependency>
+	      <groupId>javax.servlet</groupId>
+	      <artifactId>javax.servlet-api</artifactId>
+	      <scope>provided</scope>
+	    </dependency>
+	    
+		<!-- <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency> -->
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -42,9 +60,38 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				 <configuration>
+	<!-- 			<mainClass>com.truecorp.nam.test.batch.SpringBootTestProjectApplication</mainClass> -->
+					<mainClass>com.truecorp.nam.test.application.SpringBootTestWebApplication</mainClass>
+                </configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skipTests>true</skipTests>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
+	
+	<profiles>
+		<profile>
+			<id>openshift</id>
+			<build>
+				<finalName>{APP_NAME}</finalName>
+				<plugins>
+					<plugin>
+						<artifactId>maven-war-plugin</artifactId>
+						<configuration>
+							<outputDirectory>webapps</outputDirectory>
+							<warName>ROOT</warName>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 
 </project>
